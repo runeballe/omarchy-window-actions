@@ -1,0 +1,7 @@
+{
+  "tooltip": "Window actions",
+  "close": "Close window",
+  "maximize": "Maximize window",
+  "minimize": "Minimize window",
+  "noWindow": "No active window"
+}

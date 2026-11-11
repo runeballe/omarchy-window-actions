@@ -1,0 +1,38 @@
+#!/bin/bash
+# Run one action on a Hyprland window.
+#
+#   window-action close    [address]
+#   window-action maximize [address]   toggles maximized (bar stays visible)
+#   window-action minimize [address]
+#
+# Without an address the active window is used. The address is validated
+# before it is put into a dispatcher string.
+set -u
+
+action="${1:-}"
+address="${2:-}"
+[[ -n $address ]] || address=$(hyprctl activewindow -j | jq -r '.address // ""')
+[[ $address =~ ^0x[0-9a-f]+$ ]] || exit 0
+
+case "$action" in
+  close)
+    hyprctl dispatch "hl.dsp.window.close({ window = \"address:$address\" })" >/dev/null
+    ;;
+  maximize)
+    hyprctl dispatch "hl.dsp.window.fullscreen({ mode = \"maximized\", action = \"toggle\", window = \"address:$address\" })" >/dev/null
+    ;;
+  minimize)
+    # Prefer the user's minimize-window (handles tiled workspaces too and
+    # keeps the restore stack used by rune.minimize); fall back to Omarchy's.
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$address\" })" >/dev/null
+    if [[ -x $HOME/.local/bin/minimize-window ]]; then
+      exec "$HOME/.local/bin/minimize-window" minimize
+    else
+      exec omarchy-hyprland-window-minimize "$address"
+    fi
+    ;;
+  *)
+    echo "usage: window-action close|maximize|minimize [address]" >&2
+    exit 2
+    ;;
+esac

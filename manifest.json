@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "rune.window-actions",
+  "name": "Window Actions",
+  "version": "0.1.0",
+  "author": "Rune Balstad",
+  "description": "Bar button with a popup to close, maximize, or minimize the active window.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Window Actions",
+    "description": "Close, maximize, or minimize the active window",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
